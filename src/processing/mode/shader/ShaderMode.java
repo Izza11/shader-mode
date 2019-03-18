@@ -11,4 +11,13 @@ public class ShaderMode extends JavaMode {
     super(base, folder);
   }
   
+  @Override
+  public String getTitle() {
+    return "Shader";
+  }
+  
+  @Override
+  public String[] getExtensions() {
+    return new String[] { "pde", "java", "glsl" };
+  }
 }
