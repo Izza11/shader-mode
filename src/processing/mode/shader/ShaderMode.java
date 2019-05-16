@@ -20,18 +20,4 @@ public class ShaderMode extends JavaMode {
   public String[] getExtensions() {
     return new String[] { "pde", "java", "glsl" };
   }
-  
-  /*
-  @Override
-  public String getDefaultExtension() {
-	  return "pde";
-  }
-  
-  
-  @Override
-  public String getModuleExtension() {
-	  return "glsl";
-  }
-  */
-  
 }

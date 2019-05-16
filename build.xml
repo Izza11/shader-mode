@@ -54,6 +54,7 @@
     <zip destfile="${mode.dist.path}">
       <zipfileset dir="." prefix="ShaderMode">
         <include name="mode.properties" />	
+        <include name="keywords.txt" />  
         <include name="mode/**" />
         <include name="examples/**" />
         <exclude name="**/._*" />
