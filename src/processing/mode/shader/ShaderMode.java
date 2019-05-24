@@ -18,6 +18,6 @@ public class ShaderMode extends JavaMode {
   
   @Override
   public String[] getExtensions() {
-    return new String[] { "pde", "java", "glsl" };
+    return new String[] { "pde", "java", "glsl"};
   }
 }
