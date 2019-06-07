@@ -34,11 +34,7 @@ public class ShaderEditor extends JavaEditor {
   
   @Override
   public EditorHeader createHeader() {
-	  return new ShaderModeHeader(this){
-		  public void rebuild() {
-		        super.rebuild();
-		  }
-	  };
+	  return new ShaderModeHeader(this);
   }
   
 }
