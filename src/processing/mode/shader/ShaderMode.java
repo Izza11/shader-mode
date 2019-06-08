@@ -21,7 +21,6 @@ public class ShaderMode extends JavaMode {
 
   public ShaderMode(Base base, File folder) {
     super(base, folder);
-    tokenMarkerShader = createTokenMarker();
   }
   
   @Override
@@ -49,10 +48,11 @@ public class ShaderMode extends JavaMode {
   @Override 
   protected void loadKeywords(File keywordFile) throws IOException {
 	  if (keywordFile.getName().equals("keywords_shader.txt")) {
-		  System.out.println("Calling loadShaderKeywords() because keywords_shader detected");
+		  tokenMarkerShader = createTokenMarker();
+		  //System.out.println("Calling loadShaderKeywords() because keywords_shader detected");
 		  loadShaderKeywords(keywordFile, "#");
 	  } else {
-		  System.out.println("Entered simple loadKeywords()");
+		  //System.out.println("Entered simple loadKeywords()");
 		// overridden for Python, where # is an actual keyword
 		  loadKeywords(keywordFile, "#");
 	  }
@@ -61,7 +61,6 @@ public class ShaderMode extends JavaMode {
   
   protected void loadShaderKeywords(File keywordFile,
           String commentPrefix) throws IOException {
-	  System.out.println("Entered loadShaderKeywords");
 	BufferedReader reader = PApplet.createReader(keywordFile);
 	
 	String line = null;
@@ -76,9 +75,7 @@ public class ShaderMode extends JavaMode {
 			String coloring = pieces[1];
 			
 				if (coloring.length() > 0) {
-					System.out.println("before tokenMarkerShader is edited");
 					tokenMarkerShader.addColoring(keyword, coloring);
-					System.out.println("AFTER tokenMarkerShader is edited");
 				}
 				if (pieces.length == 3) {
 				String htmlFilename = pieces[2];

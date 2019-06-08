@@ -188,6 +188,7 @@ WHITESPACE	LITERAL2
 		
 abstract	KEYWORD1
 break	KEYWORD1	break
+shadertest	KEYWORD1	shadertest
 class	KEYWORD1	class
 continue	KEYWORD1	continue
 default	KEYWORD1	default	
