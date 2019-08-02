@@ -104,7 +104,6 @@ public class ShaderMode extends JavaMode {
   @Override
   public TokenMarker getTokenMarker(SketchCode code) {
 	  if (code.getExtension() == "glsl") {
-		  System.out.println("get token marker for glsl");
 		  return getTokenMarkerShader();
 	  }
 	    return getTokenMarker();
