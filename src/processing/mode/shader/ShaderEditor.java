@@ -17,10 +17,13 @@
 
 package processing.mode.shader;
 
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
 import java.io.File;
 import java.io.IOException;
 
-import javax.swing.JOptionPane;
+import javax.swing.*;
 
 import processing.app.Base;
 import processing.app.Language;
@@ -29,6 +32,7 @@ import processing.app.Preferences;
 import processing.app.Sketch;
 import processing.app.Util;
 import processing.app.ui.EditorState;
+import processing.app.ui.Toolkit;
 import processing.app.ui.EditorException;
 import processing.app.ui.EditorHeader;
 import processing.mode.java.JavaEditor;
@@ -135,5 +139,60 @@ public class ShaderEditor extends JavaEditor {
 	    // TODO this probably need not be here because of the Recent menu, right?
 	    Preferences.save();
 	  }
+  
+  protected JMenu shaderModeMenu;
+  protected JMenuItem shaderItem;
+  
+  @Override
+  protected void buildMenuBar() {
+	    JMenuBar menubar = new JMenuBar();
+	    fileMenu = buildFileMenu();
+	    menubar.add(fileMenu);
+	    menubar.add(buildEditMenu());
+	    menubar.add(buildSketchMenu());
+
+	    // For 3.0a4 move mode menu to the left of the Tool menu
+	    JMenu modeMenu = buildModeMenu();
+	    if (modeMenu != null) {
+	      menubar.add(modeMenu);
+	    }
+	    
+	    JMenu shaderMenu = buildShaderMenu();
+	    if (shaderMenu != null) {
+	    	menubar.add(shaderMenu);
+	    }
+
+	    toolsMenu = new JMenu(Language.text("menu.tools"));
+	    base.populateToolsMenu(toolsMenu);
+	    menubar.add(toolsMenu);
+
+	    menubar.add(buildHelpMenu());
+	    Toolkit.setMenuMnemonics(menubar);
+	    setJMenuBar(menubar);
+	  }
+  
+  
+  public JMenu buildShaderMenu() {
+	  shaderModeMenu = new JMenu(Language.text("Shader"));
+	    JMenuItem item;
+
+	    item = Toolkit.newJMenuItem(Language.text("menu.debug.continue"), KeyEvent.VK_U);
+	    item.addActionListener(new ActionListener() {
+	        public void actionPerformed(ActionEvent e) {
+	          handleContinue();
+	        }
+	      });
+	    shaderModeMenu.add(item);
+	    item.setEnabled(false);
+
+	    return shaderModeMenu;
+  }
+  
+  
+  
+  
+  
+  
+  
   
 }
