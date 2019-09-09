@@ -38,7 +38,6 @@ public class ShaderModeHeader extends EditorHeader{
 
 	public ShaderModeHeader(Editor eddie) {
 		super(eddie);
-		System.out.println("CREATING SHADER MODE HEADER");
 		// TODO Auto-generated constructor stub
 	}
 	
