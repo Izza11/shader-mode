@@ -1,6 +1,4 @@
-**/.DS_Store
-**/mode/
-**/bin/
-**/release/
-
-
+.DS_Store
+bin/
+mode/ShaderMode.jar
+release/ShaderMode.zip
