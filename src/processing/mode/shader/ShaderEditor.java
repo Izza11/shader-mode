@@ -20,14 +20,17 @@ package processing.mode.shader;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
-import java.io.File;
-import java.io.IOException;
 
 import javax.swing.*;
+import javax.swing.event.MenuEvent;
+import javax.swing.event.MenuListener;
+
+import com.sun.tools.javac.util.Pair;
 
 import processing.app.Base;
 import processing.app.Language;
 import processing.app.Mode;
+import processing.app.Platform;
 import processing.app.Preferences;
 import processing.app.Sketch;
 import processing.app.Util;
@@ -36,6 +39,8 @@ import processing.app.ui.Toolkit;
 import processing.app.ui.EditorException;
 import processing.app.ui.EditorHeader;
 import processing.mode.java.JavaEditor;
+import java.io.*; 
+import java.util.*;
 
 @SuppressWarnings("serial")
 public class ShaderEditor extends JavaEditor {
@@ -172,19 +177,111 @@ public class ShaderEditor extends JavaEditor {
 	  }
   
   
+  ArrayList<Pair<String, String>> readShaderFiles(){
+	  ArrayList<Pair<String, String>> templist = new ArrayList<Pair<String, String>>();
+	  File templatefolder = new File("X:\\Thesis-latest-2\\shader-mode\\templates");
+	  for (File shaderfile : templatefolder.listFiles()) {
+		  BufferedReader br = null;
+			try {
+				br = new BufferedReader(new FileReader(shaderfile));
+			} catch (FileNotFoundException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			} 	  
+			StringBuilder shadercontent = new StringBuilder();
+		    String temp; 
+		    try {
+				while ((temp = br.readLine()) != null) 
+					//templist.add(temp);
+					shadercontent.append(temp).append("\n");
+			} catch (IOException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}  
+		    
+		    // shadercontent.toString()
+		    templist.add(new Pair<String, String>(shaderfile.getName(), shadercontent.toString()));
+	  }
+	  return templist;
+	  
+  }
+  
+  void addTemplateToFile(String fileContent) throws IOException {
+	  String shdrFilename = ((ShaderSketch) getSketch()).handleNewShaderCode();
+	  shdrFilename += ".glsl";
+	  String directory = ((ShaderSketch) getSketch()).getFolder().getAbsolutePath();
+	  System.out.println(directory + "\\" + shdrFilename);
+	     
+	    BufferedWriter writer = new BufferedWriter(new FileWriter(directory + "\\" + shdrFilename));
+	    writer.write(fileContent);
+	    writer.close();
+	  ((ShaderSketch) getSketch()).load();
+  }
+  
   public JMenu buildShaderMenu() {
-	  shaderModeMenu = new JMenu(Language.text("Shader"));
+	  shaderModeMenu = new JMenu(Language.text("menu.shader"));
 	    JMenuItem item;
 
-	    item = Toolkit.newJMenuItem(Language.text("menu.debug.continue"), KeyEvent.VK_U);
+	    item = new JMenuItem(Language.text("menu.help.getting_started"));
 	    item.addActionListener(new ActionListener() {
-	        public void actionPerformed(ActionEvent e) {
-	          handleContinue();
-	        }
-	      });
+	      public void actionPerformed(ActionEvent e) {
+	        Platform.openURL(Language.text("menu.help.getting_started_shaders.url"));
+	      }
+	    });
 	    shaderModeMenu.add(item);
-	    item.setEnabled(false);
+	    
+	    ////////////////////////// ADDING TEMPLATES ////////////////////////////
+	    final JMenu templates = new JMenu(Language.text("menu.shader.templates"));
+	    // Populate only when sub-menu is opened, to avoid having spurious menu
+	    // options if a library is deleted, or a missing menu option if a library is added
+	    ArrayList<Pair<String, String>> templist = readShaderFiles();
+  
+	    templates.addMenuListener(new MenuListener() {
+	    	
+	      @Override
+	      public void menuSelected(MenuEvent e) {
+	    	  templates.removeAll();
+	    	  // read the template_names.txt file from shadermode location in Processing folder
+	    	  //reading from disk everytime we click templates option in shader menu? inefficient?
+	    	  // or load all files in constructor, then changes in files will only show when PDE is restarted
+	    	  for (int i = 0; i < templist.size(); i++) {
+	    		  //System.out.println(templist.get(i));
+	    		  String name = templist.get(i).fst;
+	    		  int index = name.lastIndexOf('.');
+	    		  
+	    		  final JMenuItem jitem = new JMenuItem(Language.text(name.substring(0, index)));
+	    		  //System.out.println(templist.get(i).fst);
+		    	  
+	    		  final int tempIndex = i;
+	    		  jitem.addActionListener(new ActionListener() {
+		    	      public void actionPerformed(ActionEvent e) {
+		    	    	  try {
+							addTemplateToFile(templist.get(tempIndex).snd);
+						} catch (IOException e1) {
+							// TODO Auto-generated catch block
+							e1.printStackTrace();
+						}		    	    	  
+		    	      }
+		    	    });
+		    	  
+		    	  templates.add(jitem);	    
+	    	  }
+	    	      
+	      }
 
+	      @Override
+	      public void menuDeselected(MenuEvent e) {
+	    	  templates.removeAll();
+	      }
+
+	      @Override
+	      public void menuCanceled(MenuEvent e) {
+	        menuDeselected(e);
+	      }
+	    });
+	    shaderModeMenu.add(templates);
+	    
+	    
 	    return shaderModeMenu;
   }
   

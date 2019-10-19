@@ -1,10 +1,20 @@
 package processing.mode.shader;
 
+import java.awt.Component;
+import java.awt.Container;
+import java.awt.event.ActionListener;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+
+import javax.swing.JButton;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JTextField;
 
 import com.sun.tools.javac.util.ArrayUtils;
 
@@ -34,11 +44,12 @@ public class ShaderSketch extends Sketch {
 		    List<String> filenames = new ArrayList<>();
 		    List<String> extensions = new ArrayList<>();
 
+		    codeFilesCount = 0;
 		    getSketchCodeFiles(filenames, extensions);
 
 		    codeCount = filenames.size();
 		    code = new SketchCode[codeCount];
-
+		    
 		    for (int i = 0; i < codeCount; i++) {
 		      String filename = filenames.get(i);
 		      String extension = extensions.get(i);
@@ -50,7 +61,6 @@ public class ShaderSketch extends Sketch {
 		      }
 		        
 		    }
-		    codeFilesCount = 0;
 
 		    // move the main class to the first tab
 		    // start at 1, if it's at zero, don't bother
@@ -98,7 +108,7 @@ public class ShaderSketch extends Sketch {
 		          if (isSanitaryName(base)) {
 		        	  if (outFilenames != null) {
 		        		  outFilenames.add(filename);
-		        		  if (folder.equals("code")) codeFilesCount++;		        		  
+		        		  if (folder.equals("code")) codeFilesCount++;	
 		        	  }		        		  
 		        	  if (outExtensions != null)
 		        		  outExtensions.add(extension);
@@ -118,7 +128,88 @@ public class ShaderSketch extends Sketch {
 	}
 	
 	
-	public void handleNewShaderCode() {
+	protected String promptForShaderTabName(String prompt, String oldName) {
+	    final JTextField field = new JTextField(oldName);
+
+	    field.addKeyListener(new KeyAdapter() {
+	      // Forget ESC, the JDialog should handle it.
+	      // Use keyTyped to catch when the feller is actually added to the text
+	      // field. With keyTyped, as opposed to keyPressed, the keyCode will be
+	      // zero, even if it's enter or backspace or whatever, so the keychar
+	      // should be used instead. Grr.
+	      public void keyTyped(KeyEvent event) {
+	        //System.out.println("got event " + event);
+	        char ch = event.getKeyChar();
+	        if ((ch == '_') || (ch == '.') || // allow.pde and .java
+	            (('A' <= ch) && (ch <= 'Z')) || (('a' <= ch) && (ch <= 'z'))) {
+	          // These events are allowed straight through.
+	        } else if (ch == ' ') {
+	          String t = field.getText();
+	          int start = field.getSelectionStart();
+	          int end = field.getSelectionEnd();
+	          field.setText(t.substring(0, start) + "_" + t.substring(end));
+	          field.setCaretPosition(start + 1);
+	          event.consume();
+	        } else if ((ch >= '0') && (ch <= '9')) {
+	          // getCaretPosition == 0 means that it's the first char
+	          // and the field is empty.
+	          // getSelectionStart means that it *will be* the first
+	          // char, because the selection is about to be replaced
+	          // with whatever is typed.
+	          if (field.getCaretPosition() == 0 ||
+	              field.getSelectionStart() == 0) {
+	            // number not allowed as first digit
+	            event.consume();
+	          }
+	        } else if (ch == KeyEvent.VK_ENTER) {
+	          // Slightly ugly hack that ensures OK button of the dialog consumes
+	          // the Enter key event. Since the text field is the default component
+	          // in the dialog, OK doesn't consume Enter key event, by default.
+	          Container parent = field.getParent();
+	          while (!(parent instanceof JOptionPane)) {
+	            parent = parent.getParent();
+	          }
+	          JOptionPane pane = (JOptionPane) parent;
+	          final JPanel pnlBottom = (JPanel)
+	            pane.getComponent(pane.getComponentCount() - 1);
+	          for (int i = 0; i < pnlBottom.getComponents().length; i++) {
+	            Component component = pnlBottom.getComponents()[i];
+	            if (component instanceof JButton) {
+	              final JButton okButton = (JButton) component;
+	              if (okButton.getText().equalsIgnoreCase("OK")) {
+	                ActionListener[] actionListeners =
+	                  okButton.getActionListeners();
+	                if (actionListeners.length > 0) {
+	                  actionListeners[0].actionPerformed(null);
+	                  event.consume();
+	                }
+	              }
+	            }
+	          }
+	        } else {
+	          event.consume();
+	        }
+	      }
+	    });
+
+	    int userReply = JOptionPane.showOptionDialog(editor, new Object[] {
+	                                                 prompt, field },
+	                                                 Language.text("editor.tab.new"),
+	                                                 JOptionPane.OK_CANCEL_OPTION,
+	                                                 JOptionPane.PLAIN_MESSAGE,
+	                                                 null, new Object[] {
+	                                                 Language.getPrompt("ok"),
+	                                                 Language.getPrompt("cancel") },
+	                                                 field);
+
+	    if (userReply == JOptionPane.OK_OPTION) {
+	      nameCode(field.getText());
+	    }
+	    return field.getText();
+	}
+
+	
+	public String handleNewShaderCode() {
 	    // make sure the user didn't hide the sketch folder
 	    ensureExistence();
 
@@ -127,12 +218,12 @@ public class ShaderSketch extends Sketch {
 	      // if the files are read-only, need to first do a "save as".
 	      Messages.showMessage(Language.text("new.messages.is_read_only"),
 	                           Language.text("new.messages.is_read_only.description"));
-	      return;
+	      return null;
 	    }
 	    renamingShaderCode = true;
 	    renamingCode = false;
 	    // editor.status.edit("Name for new file:", "");
-	    promptForTabName(Language.text("editor.tab.rename.description")+":", "");
+	    return promptForShaderTabName(Language.text("editor.tab.rename.description")+":", "");
 	  }
 		  
 	
