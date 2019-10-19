@@ -177,7 +177,7 @@ public class ShaderEditor extends JavaEditor {
 	  }
   
   
-  ArrayList<Pair<String, String>> readShaderFiles(){
+  ArrayList<Pair<String, String>> readShaderTemplates(){
 	  ArrayList<Pair<String, String>> templist = new ArrayList<Pair<String, String>>();
 	  File templatefolder = new File("X:\\Thesis-latest-2\\shader-mode\\templates");
 	  for (File shaderfile : templatefolder.listFiles()) {
@@ -210,7 +210,6 @@ public class ShaderEditor extends JavaEditor {
 	  String shdrFilename = ((ShaderSketch) getSketch()).handleNewShaderCode();
 	  shdrFilename += ".glsl";
 	  String directory = ((ShaderSketch) getSketch()).getFolder().getAbsolutePath();
-	  System.out.println(directory + "\\" + shdrFilename);
 	     
 	    BufferedWriter writer = new BufferedWriter(new FileWriter(directory + "\\" + shdrFilename));
 	    writer.write(fileContent);
@@ -234,7 +233,7 @@ public class ShaderEditor extends JavaEditor {
 	    final JMenu templates = new JMenu(Language.text("menu.shader.templates"));
 	    // Populate only when sub-menu is opened, to avoid having spurious menu
 	    // options if a library is deleted, or a missing menu option if a library is added
-	    ArrayList<Pair<String, String>> templist = readShaderFiles();
+	    ArrayList<Pair<String, String>> templist = readShaderTemplates();
   
 	    templates.addMenuListener(new MenuListener() {
 	    	
