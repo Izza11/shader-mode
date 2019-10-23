@@ -178,8 +178,8 @@ public class ShaderEditor extends JavaEditor {
   
   
   ArrayList<Pair<String, String>> readShaderTemplates(){
-	  ArrayList<Pair<String, String>> templist = new ArrayList<Pair<String, String>>();
-	  File templatefolder = new File("X:\\Thesis-latest-2\\shader-mode\\templates");
+	  ArrayList<Pair<String, String>> templist = new ArrayList<Pair<String, String>>();	  
+	  File templatefolder = new File(Base.getSketchbookModesFolder() + "\\ShaderMode\\templates");
 	  for (File shaderfile : templatefolder.listFiles()) {
 		  BufferedReader br = null;
 			try {

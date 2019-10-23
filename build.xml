@@ -57,6 +57,7 @@
         <include name="keywords.txt" /> 
         <include name="keywords_shader.txt" />   
         <include name="mode/**" />
+        <include name="templates/**" />
         <include name="examples/**" />
         <exclude name="**/._*" />
       </zipfileset>
