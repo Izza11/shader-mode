@@ -4,9 +4,23 @@
 # For an explanation of these tags, see Token.java 
 # trunk/processing/app/src/processing/app/syntax/Token.java
 
+# keywords (void, import, , etc.)
+abstract	KEYWORD1
+break	KEYWORD1	break
+class	KEYWORD1	class
+continue	KEYWORD1	continue
+false	KEYWORD1	false
+final	KEYWORD1	final
+finally	KEYWORD1
+import	KEYWORD1	import
+private	KEYWORD1	private
+protected	KEYWORD1	
+public	KEYWORD1	public
+static	KEYWORD1	static
+true	KEYWORD1	true
+void	KEYWORD1	void
 
-
-# GLSL keywords (void, import, , etc.)
+# GLSL keywords (data types)
 		
 attribute	KEYWORD5
 const	KEYWORD5
@@ -51,7 +65,6 @@ inout	KEYWORD5
 float	KEYWORD5
 double	KEYWORD5
 int	KEYWORD5
-void	KEYWORD5
 bool	KEYWORD5
 true	KEYWORD5
 false	KEYWORD5
