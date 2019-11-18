@@ -179,8 +179,7 @@ public class ShaderEditor extends JavaEditor {
   
   ArrayList<Pair<String, String>> readShaderTemplates(){
 	  ArrayList<Pair<String, String>> templist = new ArrayList<Pair<String, String>>();	
-	  System.out.println(mode.getFolder().getAbsolutePath() + "\\templates");
-	  File templatefolder = new File(mode.getFolder().getAbsolutePath() + "\\templates");
+	  File templatefolder = new File(mode.getFolder().getAbsolutePath() + "/templates");
 	  for (File shaderfile : templatefolder.listFiles()) {
 		  BufferedReader br = null;
 			try {
@@ -212,7 +211,7 @@ public class ShaderEditor extends JavaEditor {
 	  shdrFilename += ".glsl";
 	  String directory = ((ShaderSketch) getSketch()).getFolder().getAbsolutePath();
 	     
-	    BufferedWriter writer = new BufferedWriter(new FileWriter(directory + "\\" + shdrFilename));
+	    BufferedWriter writer = new BufferedWriter(new FileWriter(directory + "/" + shdrFilename));
 	    writer.write(fileContent);
 	    writer.close();
 	  ((ShaderSketch) getSketch()).load();
