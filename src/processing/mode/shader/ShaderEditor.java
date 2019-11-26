@@ -285,6 +285,174 @@ public class ShaderEditor extends JavaEditor {
   }
   
   
+  public boolean surveyPrompt() {
+	  toFront();
+
+	    if (!Platform.isMacOS()) {
+	      String prompt =
+	        Language.interpolate("Have you filled the post-survey?");
+	      int result =
+	        JOptionPane.showConfirmDialog(this, prompt,
+	                                      Language.text("menu.file.close"),
+	                                      JOptionPane.YES_NO_CANCEL_OPTION,
+	                                      JOptionPane.QUESTION_MESSAGE);
+
+	      if (result == JOptionPane.NO_OPTION) {
+	        Platform.openURL(Language.text("https://docs.google.com/forms/d/1UjbqwCgthD-z8_YYzVZ2XzkGacS6Qhp67zNUDJb788o/edit?usp=forms_home&ths=true"));
+	        return false;
+
+	      } else if (result == JOptionPane.CANCEL_OPTION ||
+	                 result == JOptionPane.CLOSED_OPTION) {
+	    	  return false;
+	      } else {
+	        return true;
+	      }
+
+	    } else {
+	      // This code is disabled unless Java 1.5 is being used on Mac OS X
+	      // because of a Java bug that prevents the initial value of the
+	      // dialog from being set properly (at least on my MacBook Pro).
+	      // The bug causes the "Don't Save" option to be the highlighted,
+	      // blinking, default. This sucks. But I'll tell you what doesn't
+	      // suck--workarounds for the Mac and Apple's snobby attitude about it!
+	      // I think it's nifty that they treat their developers like dirt.
+
+	      // Pane formatting adapted from the quaqua guide
+	      // http://www.randelshofer.ch/quaqua/guide/joptionpane.html
+	      JOptionPane pane =
+	        new JOptionPane("<html> " +
+	                        "<head> <style type=\"text/css\">"+
+	                        "b { font: 13pt \"Lucida Grande\" }"+
+	                        "p { font: 11pt \"Lucida Grande\"; margin-top: 8px }"+
+	                        "</style> </head>" +
+	                        "<b>" + Language.interpolate("Have you filled the post-survey", sketch.getName()) + "</b>" +
+	                        "<p>" + Language.text("save.hint") + "</p>",
+	                        JOptionPane.QUESTION_MESSAGE);
+
+	      String[] options = new String[] {
+	        Language.text("What"),
+	        Language.text("No"),  // put No here
+	        Language.text("Whatevs")
+	      };
+	      pane.setOptions(options);
+
+	      // highlight the safest option ala apple hig
+	      pane.setInitialValue(options[0]);
+
+	      // on macosx, setting the destructive property places this option
+	      // away from the others at the lefthand side
+	      pane.putClientProperty("Quaqua.OptionPane.destructiveOption",
+	                             Integer.valueOf(2));
+
+	      JDialog dialog = pane.createDialog(this, null);
+	      dialog.setVisible(true);
+
+	      Object result = pane.getValue();
+	      if (result == options[0]) {  // save (and close/quit)
+	        return true;
+
+	      } else if (result == options[2]) {  // don't save (still close/quit)
+	        return false;
+
+	      } else {  // cancel?
+	        return false;
+	      }
+	    }
+  } 
+  
+  /**
+   * Check if the sketch is modified and ask user to save changes.
+   * @return false if canceling the close/quit operation
+   */
+  @Override
+  public boolean checkModified() {
+	  System.out.println("CHECKING IF MODIFIED");	  
+	  if (!surveyPrompt()) return false;
+	  
+    if (!sketch.isModified()) return true;
+
+    // As of Processing 1.0.10, this always happens immediately.
+    // http://dev.processing.org/bugs/show_bug.cgi?id=1456
+
+    // With Java 7u40 on OS X, need to bring the window forward.
+    toFront();
+
+    if (!Platform.isMacOS()) {
+      String prompt =
+        Language.interpolate("close.unsaved_changes", sketch.getName());
+      int result =
+        JOptionPane.showConfirmDialog(this, prompt,
+                                      Language.text("menu.file.close"),
+                                      JOptionPane.YES_NO_CANCEL_OPTION,
+                                      JOptionPane.QUESTION_MESSAGE);
+
+      if (result == JOptionPane.YES_OPTION) {
+        return handleSave(true);
+
+      } else if (result == JOptionPane.NO_OPTION) {
+        return true;  // ok to continue
+
+      } else if (result == JOptionPane.CANCEL_OPTION ||
+                 result == JOptionPane.CLOSED_OPTION) {
+        return false;
+
+      } else {
+        throw new IllegalStateException();
+      }
+
+    } else {
+      // This code is disabled unless Java 1.5 is being used on Mac OS X
+      // because of a Java bug that prevents the initial value of the
+      // dialog from being set properly (at least on my MacBook Pro).
+      // The bug causes the "Don't Save" option to be the highlighted,
+      // blinking, default. This sucks. But I'll tell you what doesn't
+      // suck--workarounds for the Mac and Apple's snobby attitude about it!
+      // I think it's nifty that they treat their developers like dirt.
+
+      // Pane formatting adapted from the quaqua guide
+      // http://www.randelshofer.ch/quaqua/guide/joptionpane.html
+      JOptionPane pane =
+        new JOptionPane("<html> " +
+                        "<head> <style type=\"text/css\">"+
+                        "b { font: 13pt \"Lucida Grande\" }"+
+                        "p { font: 11pt \"Lucida Grande\"; margin-top: 8px }"+
+                        "</style> </head>" +
+                        "<b>" + Language.interpolate("save.title", sketch.getName()) + "</b>" +
+                        "<p>" + Language.text("save.hint") + "</p>",
+                        JOptionPane.QUESTION_MESSAGE);
+
+      String[] options = new String[] {
+        Language.text("save.btn.save"),
+        Language.text("prompt.cancel"),
+        Language.text("save.btn.dont_save")
+      };
+      pane.setOptions(options);
+
+      // highlight the safest option ala apple hig
+      pane.setInitialValue(options[0]);
+
+      // on macosx, setting the destructive property places this option
+      // away from the others at the lefthand side
+      pane.putClientProperty("Quaqua.OptionPane.destructiveOption",
+                             Integer.valueOf(2));
+
+      JDialog dialog = pane.createDialog(this, null);
+      dialog.setVisible(true);
+
+      Object result = pane.getValue();
+      if (result == options[0]) {  // save (and close/quit)
+        return handleSave(true);
+
+      } else if (result == options[2]) {  // don't save (still close/quit)
+        return true;
+
+      } else {  // cancel?
+        return false;
+      }
+    }
+  }
+
+  
   
   
   
