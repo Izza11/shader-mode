@@ -330,9 +330,9 @@ public class ShaderEditor extends JavaEditor {
 	                        JOptionPane.QUESTION_MESSAGE);
 
 	      String[] options = new String[] {
-	        Language.text("What"),
-	        Language.text("No"),  // put No here
-	        Language.text("Whatevs")
+	        Language.text("Yes"),
+	        Language.text("Cancel"),  // put No here
+	        Language.text("No")
 	      };
 	      pane.setOptions(options);
 
@@ -348,10 +348,11 @@ public class ShaderEditor extends JavaEditor {
 	      dialog.setVisible(true);
 
 	      Object result = pane.getValue();
-	      if (result == options[0]) {  // save (and close/quit)
+	      if (result == options[0]) {  // Yes already filled survey
 	        return true;
 
-	      } else if (result == options[2]) {  // don't save (still close/quit)
+	      } else if (result == options[2]) {  // Haven't filled survey
+	    	  Platform.openURL(Language.text("https://docs.google.com/forms/d/1UjbqwCgthD-z8_YYzVZ2XzkGacS6Qhp67zNUDJb788o/edit?usp=forms_home&ths=true"));
 	        return false;
 
 	      } else {  // cancel?
@@ -365,8 +366,7 @@ public class ShaderEditor extends JavaEditor {
    * @return false if canceling the close/quit operation
    */
   @Override
-  public boolean checkModified() {
-	  System.out.println("CHECKING IF MODIFIED");	  
+  public boolean checkModified() {	  
 	  if (!surveyPrompt()) return false;
 	  
     if (!sketch.isModified()) return true;
