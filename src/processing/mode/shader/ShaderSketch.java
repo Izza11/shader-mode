@@ -37,8 +37,11 @@ public class ShaderSketch extends Sketch {
   
   @Override
   protected void load() {
+    moveShaderFilesToRoot();
+    
     super.load();
     
+    /*
     // Adding shader files that could be inside data
     folders  = new ArrayList<String>();
     List<String> filenames = new ArrayList<>();
@@ -52,53 +55,77 @@ public class ShaderSketch extends Sketch {
       SketchCode newCode = new SketchCode(new File(path, filename), extension);
       insertCode(newCode);
     }
-    
-    
-    /*
-    List<String> filenames = new ArrayList<>();
-    List<String> extensions = new ArrayList<>();
-
-    getSketchCodeFiles(filenames, extensions);
-    for (int i = 0; i < filenames.size(); i++) {
-      String filename = filenames.get(i);
-      String extension = extensions.get(i);
-      String path = folders.get(i);
-      SketchCode newCode = new SketchCode(new File(path, filename), extension);
-      insertCode(newCode);
-    }
-    
-    // Move the main class to the first tab
-    SketchCode[] codeCopy = getCode();
-    for (int i = 1; i < getCodeCount(); i++) {
-      if (codeCopy[i].getFile().equals(getMainFile())) {
-        SketchCode temp = codeCopy[0];
-        codeCopy[0] = codeCopy[i];
-        codeCopy[i] = temp;
-        break;
-      }
-    }
-
-    // Sort the entries at the top
-    sortCode();
-
-    // Set the main file to be the current tab
-    if (shaderEditor != null) {
-      setCurrentCode(0);
-    }
-    
-    // This ensures that codeFolder and dataFolder get properly initialized
-    updateInternal(getName(), getFolder(), false);
     */
   }
   
-  
-//  @Override
-//  public void getSketchCodeFiles(List<String> outFilenames, List<String> outExtensions) {
-//    folders  = new ArrayList<String>();
-//    setSketchCodeFiles(getFolder(), outFilenames, outExtensions);
-//    setSketchCodeFiles(getDataFolder(), outFilenames, outExtensions);
-//  }  
+  private void moveShaderFilesToRoot() {
+    File dataFolderTmp = new File(getFolder(), "data");
+    // get list of files in the sketch folder
+    String list[] = dataFolderTmp.list();
+    if (list == null) return;
+    
+    for (String filename : list) {
+      // Ignoring the dot prefix files is especially important to avoid files
+      // with the ._ prefix on Mac OS X. (You'll see this with Mac files on
+      // non-HFS drives, i.e. a thumb drive formatted FAT32.)
+      if (filename.startsWith(".")) continue;
 
+      // Don't let some wacko name a directory blah.pde or bling.java.
+      if (new File(getFolder(), filename).isDirectory()) continue;
+
+      // figure out the name without any extension
+      String base = filename;
+      // now strip off the .pde and .java extensions
+      String extension = "glsl";
+      if (base.toLowerCase().endsWith("." + extension)) {
+        base = base.substring(0, base.length() - (extension.length() + 1));
+        if (isSanitaryName(base)) {
+          File srcFilename = new File(dataFolderTmp, filename);
+          File dstFilename = new File(getFolder(), filename);
+          srcFilename.renameTo(dstFilename);
+        }
+      }      
+    }
+  }
+
+  
+  @Override
+  public void getSketchCodeFiles(List<String> outFilenames, List<String> outExtensions) {
+    super.getSketchCodeFiles(outFilenames, outExtensions);
+    
+    /*
+    // get list of files in the sketch folder
+    String list[] = getDataFolder().list();
+    if (list == null) return;
+    
+    for (String filename : list) {
+      // Ignoring the dot prefix files is especially important to avoid files
+      // with the ._ prefix on Mac OS X. (You'll see this with Mac files on
+      // non-HFS drives, i.e. a thumb drive formatted FAT32.)
+      if (filename.startsWith(".")) continue;
+
+      // Don't let some wacko name a directory blah.pde or bling.java.
+      if (new File(getFolder(), filename).isDirectory()) continue;
+
+      // figure out the name without any extension
+      String base = filename;
+      // now strip off the .pde and .java extensions
+      for (String extension : getMode().getExtensions()) {
+        if (base.toLowerCase().endsWith("." + extension)) {
+          base = base.substring(0, base.length() - (extension.length() + 1));
+
+          // Don't allow people to use files with invalid names, since on load,
+          // it would be otherwise possible to sneak in nasty filenames. [0116]
+          if (isSanitaryName(base)) {
+            if (outFilenames != null) outFilenames.add(filename);
+            if (outExtensions != null) outExtensions.add(extension);
+          }
+        }
+      }
+    }
+    */
+  }  
+  
   
   private void setSketchCodeFiles(File inFolder, List<String> outFilenames, List<String> outExtensions) {
     String list[] = inFolder.list();
