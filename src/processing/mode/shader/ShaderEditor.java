@@ -135,39 +135,16 @@ public class ShaderEditor extends JavaEditor {
     buildShaderMenu();
     return shaderModeMenu;
   }
-  
-  
-//  @Override
-//  protected void buildMenuBar() {
-//    JMenuBar menubar = new JMenuBar();
-//    fileMenu = buildFileMenu();
-//    menubar.add(fileMenu);
-//    menubar.add(buildEditMenu());
-//    menubar.add(buildSketchMenu());
-//
-//    // For 3.0a4 move mode menu to the left of the Tool menu
-//    JMenu modeMenu = buildModeMenu();
-//    if (modeMenu != null) {
-//      menubar.add(modeMenu);
-//    }
-//
-//    JMenu shaderMenu = buildShaderMenu();
-//    if (shaderMenu != null) {
-//      menubar.add(shaderMenu);
-//    }
-//
-//    toolsMenu = new JMenu(Language.text("menu.tools"));
-//    base.populateToolsMenu(toolsMenu);
-//    menubar.add(toolsMenu);
-//
-//    menubar.add(buildHelpMenu());
-//    Toolkit.setMenuMnemonics(menubar);
-//    setJMenuBar(menubar);
-//  }
 
   ArrayList<Pair> readShaderTemplates() {
     ArrayList<Pair> templist = new ArrayList<Pair>();
-    File templatefolder = new File(mode.getFolder().getAbsolutePath() + "/templates");
+    //System.out.println("readShaderTemplates path:");
+    String path = mode.getFolder().getAbsolutePath() + "/templates";
+    path = path.replace("\\", "/");
+    
+    //System.out.println(path);
+    
+    File templatefolder = new File(path);
     for (File shaderfile : templatefolder.listFiles()) {
       BufferedReader br = null;
       try {
@@ -191,107 +168,124 @@ public class ShaderEditor extends JavaEditor {
       templist.add(new Pair(shaderfile.getName(), shadercontent.toString()));
     }
     return templist;
-
   }
 
-  void addTemplateToFile(String fileContent) throws IOException {
+  protected void writeTemplateToSketch(String fileContent) throws IOException {
     String shdrFilename = ((ShaderSketch) getSketch()).handleNewShaderCode();
-    shdrFilename += ".glsl";
+    
+    if (shdrFilename.equals("")) { // user cancelled template creation
+    	return;
+    }
+
     String directory = ((ShaderSketch) getSketch()).getFolder().getAbsolutePath();
 
-    BufferedWriter writer = new BufferedWriter(new FileWriter(directory + "/" + shdrFilename));
+    //System.out.println("writeTemplate path is:");
+    String path = directory + "/" + shdrFilename;
+    path = path.replace("\\", "/");
+    
+    //System.out.println(path);
+    
+    BufferedWriter writer = new BufferedWriter(new FileWriter(path));
     writer.write(fileContent);
     writer.close();
     ((ShaderSketch) getSketch()).load();
   }
+  
+  protected void addTemplatesToMenu() {
+	  final JMenu templates = new JMenu(Language.text("Shader Templates"));
+	    // Populate only when sub-menu is opened, to avoid having spurious menu
+	    // options if a library is deleted, or a missing menu option if a library is
+	    // added
+	    ArrayList<Pair> templist = readShaderTemplates();
+	    templates.addMenuListener(new MenuListener() {
+
+	      @Override
+	      public void menuSelected(MenuEvent e) {
+	        templates.removeAll();
+	        // read the template_names.txt file from shadermode location in Processing
+	        // folder
+	        // reading from disk everytime we click templates option in shader menu?
+	        // inefficient?
+	        // or load all files in constructor, then changes in files will only show when
+	        // PDE is restarted
+	        for (int i = 0; i < templist.size(); i++) {
+	          // System.out.println(templist.get(i));
+	          String name = templist.get(i).fst;
+	          int index = name.lastIndexOf('.');
+
+	          final JMenuItem jitem = new JMenuItem(Language.text(name.substring(0, index)));
+	          // System.out.println(templist.get(i).fst);
+
+	          final int tempIndex = i;
+	          
+	          jitem.addActionListener(new ActionListener() {
+	            public void actionPerformed(ActionEvent e) {
+	              try {
+	            	  writeTemplateToSketch(templist.get(tempIndex).snd);
+	              } catch (IOException e1) {
+	                // TODO Auto-generated catch block
+	                e1.printStackTrace();
+	              }
+	            }
+	          });
+	          
+	          templates.add(jitem);
+	        }
+	      }
+
+	      @Override
+	      public void menuDeselected(MenuEvent e) {
+	        templates.removeAll();
+	      }
+
+	      @Override
+	      public void menuCanceled(MenuEvent e) {
+	        menuDeselected(e);
+	      }
+	    });
+	    shaderModeMenu.add(templates);
+  }
 
   public JMenu buildShaderMenu() {
-    shaderModeMenu = new JMenu(Language.text("menu.shader"));
+    shaderModeMenu = new JMenu(Language.text("Shader"));
     JMenuItem item;
 
-    item = new JMenuItem(Language.text("menu.help.getting_started"));
+    // Adding link to processing shader tutorial
+    item = new JMenuItem(Language.text("Getting Started"));
     item.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
-        Platform.openURL(Language.text("menu.help.getting_started_shaders.url"));
+        Platform.openURL(Language.text("https://processing.org/tutorials/pshader/"));
+      }
+    });
+    shaderModeMenu.add(item);
+    
+    // Reading and adding all templates from the mode template folder to the Shader Menu
+    addTemplatesToMenu(); 
+    
+    // Adding link to Post survey
+    item = new JMenuItem(Language.text("Post-survey"));
+    item.addActionListener(new ActionListener() {
+      public void actionPerformed(ActionEvent e) {
+    	  Platform.openURL(Language.text(
+    	            "https://docs.google.com/forms/d/1UjbqwCgthD-z8_YYzVZ2XzkGacS6Qhp67zNUDJb788o/edit?usp=forms_home&ths=true"));
       }
     });
     shaderModeMenu.add(item);
 
-    ////////////////////////// ADDING TEMPLATES ////////////////////////////
-    final JMenu templates = new JMenu(Language.text("menu.shader.templates"));
-    // Populate only when sub-menu is opened, to avoid having spurious menu
-    // options if a library is deleted, or a missing menu option if a library is
-    // added
-    ArrayList<Pair> templist = readShaderTemplates();
-
-    templates.addMenuListener(new MenuListener() {
-
-      @Override
-      public void menuSelected(MenuEvent e) {
-        templates.removeAll();
-        // read the template_names.txt file from shadermode location in Processing
-        // folder
-        // reading from disk everytime we click templates option in shader menu?
-        // inefficient?
-        // or load all files in constructor, then changes in files will only show when
-        // PDE is restarted
-        for (int i = 0; i < templist.size(); i++) {
-          // System.out.println(templist.get(i));
-          String name = templist.get(i).fst;
-          int index = name.lastIndexOf('.');
-
-          final JMenuItem jitem = new JMenuItem(Language.text(name.substring(0, index)));
-          // System.out.println(templist.get(i).fst);
-
-          final int tempIndex = i;
-          jitem.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-              try {
-                addTemplateToFile(templist.get(tempIndex).snd);
-              } catch (IOException e1) {
-                // TODO Auto-generated catch block
-                e1.printStackTrace();
-              }
-            }
-          });
-
-          templates.add(jitem);
-        }
-
-      }
-
-      @Override
-      public void menuDeselected(MenuEvent e) {
-        templates.removeAll();
-      }
-
-      @Override
-      public void menuCanceled(MenuEvent e) {
-        menuDeselected(e);
-      }
-    });
-    shaderModeMenu.add(templates);
-
     return shaderModeMenu;
   }
 
-  public boolean surveyPrompt() {
+  public void surveyPrompt() {
     toFront();
 
     if (!Platform.isMacOS()) {
-      String prompt = Language.interpolate("Have you filled the post-survey?");
+      String prompt = Language.interpolate("Are you ready to fill the post-survey?");
       int result = JOptionPane.showConfirmDialog(this, prompt, Language.text("menu.file.close"),
           JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE);
 
-      if (result == JOptionPane.NO_OPTION) {
+      if (result == JOptionPane.YES_OPTION) {
         Platform.openURL(Language.text(
             "https://docs.google.com/forms/d/1UjbqwCgthD-z8_YYzVZ2XzkGacS6Qhp67zNUDJb788o/edit?usp=forms_home&ths=true"));
-        return false;
-
-      } else if (result == JOptionPane.CANCEL_OPTION || result == JOptionPane.CLOSED_OPTION) {
-        return false;
-      } else {
-        return true;
       }
 
     } else {
@@ -307,7 +301,7 @@ public class ShaderEditor extends JavaEditor {
       // http://www.randelshofer.ch/quaqua/guide/joptionpane.html
       JOptionPane pane = new JOptionPane("<html> " + "<head> <style type=\"text/css\">"
           + "b { font: 13pt \"Lucida Grande\" }" + "p { font: 11pt \"Lucida Grande\"; margin-top: 8px }"
-          + "</style> </head>" + "<b>" + Language.interpolate("Have you filled the post-survey", sketch.getName())
+          + "</style> </head>" + "<b>" + Language.interpolate("Are you ready to fill the post-survey?", sketch.getName())
           + "</b>" + "<p>" + Language.text("save.hint") + "</p>", JOptionPane.QUESTION_MESSAGE);
 
       String[] options = new String[] { Language.text("Yes"), Language.text("Cancel"), // put No here
@@ -325,17 +319,10 @@ public class ShaderEditor extends JavaEditor {
       dialog.setVisible(true);
 
       Object result = pane.getValue();
-      if (result == options[0]) { // Yes already filled survey
-        return true;
-
-      } else if (result == options[2]) { // Haven't filled survey
+      if (result == options[0]) { // Haven't filled survey
         Platform.openURL(Language.text(
             "https://docs.google.com/forms/d/1UjbqwCgthD-z8_YYzVZ2XzkGacS6Qhp67zNUDJb788o/edit?usp=forms_home&ths=true"));
-        return false;
-
-      } else { // cancel?
-        return false;
-      }
+      } 
     }
   }
 
@@ -346,8 +333,7 @@ public class ShaderEditor extends JavaEditor {
    */
   @Override
   public boolean checkModified() {
-    if (!surveyPrompt())
-      return false;
+    surveyPrompt();
 
     if (!sketch.isModified())
       return true;
