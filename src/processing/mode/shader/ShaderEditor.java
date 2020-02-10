@@ -142,7 +142,11 @@ public class ShaderEditor extends JavaEditor {
     String path = mode.getFolder().getAbsolutePath() + "/templates";
     path = path.replace("\\", "/");
     
+<<<<<<< HEAD
     System.out.println("path in readshader is " + path);
+=======
+    //System.out.println(path);
+>>>>>>> 36419b03d4832f8fb5f08d39d70f2004c7946f1f
     
     File templatefolder = new File(path);
     for (File shaderfile : templatefolder.listFiles()) {
@@ -171,7 +175,10 @@ public class ShaderEditor extends JavaEditor {
   }
 
   protected void writeTemplateToSketch(String fileContent) throws IOException {
+<<<<<<< HEAD
 	  System.out.println("ENTERED writetemplate..");
+=======
+>>>>>>> 36419b03d4832f8fb5f08d39d70f2004c7946f1f
     String shdrFilename = ((ShaderSketch) getSketch()).handleNewShaderCode();
     
     if (shdrFilename.equals("")) { // user cancelled template creation
@@ -180,11 +187,19 @@ public class ShaderEditor extends JavaEditor {
 
     String directory = ((ShaderSketch) getSketch()).getFolder().getAbsolutePath();
 
+<<<<<<< HEAD
     System.out.println("writeTemplate path is:");
     String path = directory + "/" + shdrFilename;
     path = path.replace("\\", "/");
     
     System.out.println(path);
+=======
+    //System.out.println("writeTemplate path is:");
+    String path = directory + "/" + shdrFilename;
+    path = path.replace("\\", "/");
+    
+    //System.out.println(path);
+>>>>>>> 36419b03d4832f8fb5f08d39d70f2004c7946f1f
     
     BufferedWriter writer = new BufferedWriter(new FileWriter(path));
     writer.write(fileContent);
@@ -193,12 +208,18 @@ public class ShaderEditor extends JavaEditor {
   }
   
   protected void addTemplatesToMenu() {
+<<<<<<< HEAD
 	  System.out.println("entering addtemplatestoMenu");
+=======
+>>>>>>> 36419b03d4832f8fb5f08d39d70f2004c7946f1f
 	  final JMenu templates = new JMenu(Language.text("Shader Templates"));
 	    // Populate only when sub-menu is opened, to avoid having spurious menu
 	    // options if a library is deleted, or a missing menu option if a library is
 	    // added
+<<<<<<< HEAD
 	  System.out.println("going to enter readShadertemplates");
+=======
+>>>>>>> 36419b03d4832f8fb5f08d39d70f2004c7946f1f
 	    ArrayList<Pair> templist = readShaderTemplates();
 	    templates.addMenuListener(new MenuListener() {
 
@@ -211,7 +232,10 @@ public class ShaderEditor extends JavaEditor {
 	        // inefficient?
 	        // or load all files in constructor, then changes in files will only show when
 	        // PDE is restarted
+<<<<<<< HEAD
 	        System.out.println("about to enter writetemplates..");
+=======
+>>>>>>> 36419b03d4832f8fb5f08d39d70f2004c7946f1f
 	        for (int i = 0; i < templist.size(); i++) {
 	          // System.out.println(templist.get(i));
 	          String name = templist.get(i).fst;
@@ -220,11 +244,19 @@ public class ShaderEditor extends JavaEditor {
 	          final JMenuItem jitem = new JMenuItem(Language.text(name.substring(0, index)));
 	          // System.out.println(templist.get(i).fst);
 
+<<<<<<< HEAD
 	          final int tempIndex = i;	          
 	          jitem.addActionListener(new ActionListener() {
 	            public void actionPerformed(ActionEvent e) {
 	              try {
 	            	  System.out.println("entering writetemplates..");
+=======
+	          final int tempIndex = i;
+	          
+	          jitem.addActionListener(new ActionListener() {
+	            public void actionPerformed(ActionEvent e) {
+	              try {
+>>>>>>> 36419b03d4832f8fb5f08d39d70f2004c7946f1f
 	            	  writeTemplateToSketch(templist.get(tempIndex).snd);
 	              } catch (IOException e1) {
 	                // TODO Auto-generated catch block
