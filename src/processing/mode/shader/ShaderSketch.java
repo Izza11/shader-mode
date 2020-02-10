@@ -156,7 +156,6 @@ public class ShaderSketch extends Sketch {
 
   
   public String handleNewShaderCode() {
-	  System.out.println("entered handlenewsshadercode");
     // make sure the user didn't hide the sketch folder
     ensureExistence();
 
@@ -190,16 +189,11 @@ public class ShaderSketch extends Sketch {
   }
   
   protected boolean askUser() {
-<<<<<<< HEAD
-	  if (shaderEditor == null)
-		  return false;;
-=======
 	  System.out.println("just entering..");
 	  //shaderEditor.toFront();
 	  //System.out.println("after toFront..");
 	  if (shaderEditor == null)
 		  System.out.println("editor is NULL");
->>>>>>> 36419b03d4832f8fb5f08d39d70f2004c7946f1f
 	  
 	    if (!Platform.isMacOS()) {
 	      String prompt = Language.interpolate("Shader files will be moved to root sketch folder. Do you want to proceed?");
@@ -247,10 +241,7 @@ public class ShaderSketch extends Sketch {
 	      Object result = pane.getValue();
 	      if (result == options[0]) { // Yes already filled survey
 	        return true;
-<<<<<<< HEAD
-=======
 
->>>>>>> 36419b03d4832f8fb5f08d39d70f2004c7946f1f
 	      } else if (result == options[2]) { // Haven't filled survey
 	        return false;
 
