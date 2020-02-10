@@ -51,7 +51,6 @@ public class ShaderSketch extends Sketch {
 
     boolean allowed = false;
     for (String filename : list) {
-    	System.out.println("changed file " + filename);
       // Ignoring the dot prefix files is especially important to avoid files
       // with the ._ prefix on Mac OS X. (You'll see this with Mac files on
       // non-HFS drives, i.e. a thumb drive formatted FAT32.)
@@ -156,6 +155,7 @@ public class ShaderSketch extends Sketch {
 
   
   public String handleNewShaderCode() {
+	  System.out.println("ENTERED handlenewshadercode");
     // make sure the user didn't hide the sketch folder
     ensureExistence();
 
@@ -189,11 +189,7 @@ public class ShaderSketch extends Sketch {
   }
   
   protected boolean askUser() {
-	  System.out.println("just entering..");
-	  //shaderEditor.toFront();
-	  //System.out.println("after toFront..");
-	  if (shaderEditor == null)
-		  System.out.println("editor is NULL");
+	  if (shaderEditor == null) return false;
 	  
 	    if (!Platform.isMacOS()) {
 	      String prompt = Language.interpolate("Shader files will be moved to root sketch folder. Do you want to proceed?");

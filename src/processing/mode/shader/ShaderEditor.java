@@ -137,12 +137,13 @@ public class ShaderEditor extends JavaEditor {
   }
 
   ArrayList<Pair> readShaderTemplates() {
+	  System.out.println("ENTERED readshader");
     ArrayList<Pair> templist = new ArrayList<Pair>();
-    //System.out.println("readShaderTemplates path:");
+    System.out.println("readShaderTemplates path:");
     String path = mode.getFolder().getAbsolutePath() + "/templates";
     path = path.replace("\\", "/");
     
-    //System.out.println(path);
+    System.out.println(path);
     
     File templatefolder = new File(path);
     for (File shaderfile : templatefolder.listFiles()) {
@@ -164,13 +165,13 @@ public class ShaderEditor extends JavaEditor {
         e1.printStackTrace();
       }
 
-      // shadercontent.toString()
       templist.add(new Pair(shaderfile.getName(), shadercontent.toString()));
     }
     return templist;
   }
 
   protected void writeTemplateToSketch(String fileContent) throws IOException {
+	  System.out.println("ENTERED writeTemplate");
     String shdrFilename = ((ShaderSketch) getSketch()).handleNewShaderCode();
     
     if (shdrFilename.equals("")) { // user cancelled template creation
@@ -179,11 +180,11 @@ public class ShaderEditor extends JavaEditor {
 
     String directory = ((ShaderSketch) getSketch()).getFolder().getAbsolutePath();
 
-    //System.out.println("writeTemplate path is:");
+    System.out.println("writeTemplate path is:");
     String path = directory + "/" + shdrFilename;
     path = path.replace("\\", "/");
     
-    //System.out.println(path);
+    System.out.println(path);
     
     BufferedWriter writer = new BufferedWriter(new FileWriter(path));
     writer.write(fileContent);
@@ -192,10 +193,12 @@ public class ShaderEditor extends JavaEditor {
   }
   
   protected void addTemplatesToMenu() {
+	  System.out.println("entering addtemplatetoMenu");
 	  final JMenu templates = new JMenu(Language.text("Shader Templates"));
 	    // Populate only when sub-menu is opened, to avoid having spurious menu
 	    // options if a library is deleted, or a missing menu option if a library is
 	    // added
+	  System.out.println("about to readshadertemplate");
 	    ArrayList<Pair> templist = readShaderTemplates();
 	    templates.addMenuListener(new MenuListener() {
 
@@ -208,6 +211,7 @@ public class ShaderEditor extends JavaEditor {
 	        // inefficient?
 	        // or load all files in constructor, then changes in files will only show when
 	        // PDE is restarted
+	        System.out.println("entering writetemplatetosketch");
 	        for (int i = 0; i < templist.size(); i++) {
 	          // System.out.println(templist.get(i));
 	          String name = templist.get(i).fst;
