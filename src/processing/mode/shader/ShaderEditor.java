@@ -194,7 +194,10 @@ public class ShaderEditor extends JavaEditor {
   
   protected void addTemplatesToMenu() {
 	  System.out.println("entering addtemplatetoMenu");
+	  
 	  final JMenu templates = new JMenu(Language.text("Shader Templates"));
+	  
+	  /*
 	    // Populate only when sub-menu is opened, to avoid having spurious menu
 	    // options if a library is deleted, or a missing menu option if a library is
 	    // added
@@ -205,6 +208,7 @@ public class ShaderEditor extends JavaEditor {
 	      @Override
 	      public void menuSelected(MenuEvent e) {
 	        templates.removeAll();
+	        
 	        // read the template_names.txt file from shadermode location in Processing
 	        // folder
 	        // reading from disk everytime we click templates option in shader menu?
@@ -218,18 +222,19 @@ public class ShaderEditor extends JavaEditor {
 	          int index = name.lastIndexOf('.');
 
 	          final JMenuItem jitem = new JMenuItem(Language.text(name.substring(0, index)));
-	          // System.out.println(templist.get(i).fst);
+	          System.out.println("Adding shader template item " + name.substring(0, index));
 
 	          final int tempIndex = i;
 	          
 	          jitem.addActionListener(new ActionListener() {
+	            @Override
 	            public void actionPerformed(ActionEvent e) {
-	              try {
-	            	  writeTemplateToSketch(templist.get(tempIndex).snd);
-	              } catch (IOException e1) {
-	                // TODO Auto-generated catch block
-	                e1.printStackTrace();
-	              }
+//	              try {
+//	            	  writeTemplateToSketch(templist.get(tempIndex).snd);
+//	              } catch (IOException e1) {
+//	                // TODO Auto-generated catch block
+//	                e1.printStackTrace();
+//	              }
 	            }
 	          });
 	          
@@ -247,7 +252,43 @@ public class ShaderEditor extends JavaEditor {
 	        menuDeselected(e);
 	      }
 	    });
-	    shaderModeMenu.add(templates);
+	    */
+	    
+	  
+    // read the template_names.txt file from shadermode location in Processing
+    // folder
+    // reading from disk everytime we click templates option in shader menu?
+    // inefficient?
+    // or load all files in constructor, then changes in files will only show when
+    // PDE is restarted
+	  ArrayList<Pair> templist = readShaderTemplates();
+    System.out.println("entering writetemplatetosketch");
+    for (int i = 0; i < templist.size(); i++) {
+      // System.out.println(templist.get(i));
+      String name = templist.get(i).fst;
+      int index = name.lastIndexOf('.');
+
+      final JMenuItem jitem = new JMenuItem(Language.text(name.substring(0, index)));
+      System.out.println("Adding shader template item " + name.substring(0, index));
+
+      final int tempIndex = i;
+      
+      jitem.addActionListener(new ActionListener() {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+          try {
+            writeTemplateToSketch(templist.get(tempIndex).snd);
+          } catch (IOException e1) {
+            // TODO Auto-generated catch block
+            e1.printStackTrace();
+          }
+        }
+      });
+      
+      templates.add(jitem);
+    }
+	    
+	  shaderModeMenu.add(templates);
   }
 
   public JMenu buildShaderMenu() {
@@ -257,6 +298,7 @@ public class ShaderEditor extends JavaEditor {
     // Adding link to processing shader tutorial
     item = new JMenuItem(Language.text("Getting Started"));
     item.addActionListener(new ActionListener() {
+      @Override
       public void actionPerformed(ActionEvent e) {
         Platform.openURL(Language.text("https://processing.org/tutorials/pshader/"));
       }
@@ -269,6 +311,7 @@ public class ShaderEditor extends JavaEditor {
     // Adding link to Post survey
     item = new JMenuItem(Language.text("Post-survey"));
     item.addActionListener(new ActionListener() {
+      @Override
       public void actionPerformed(ActionEvent e) {
     	  Platform.openURL(Language.text(
     	            "https://docs.google.com/forms/d/1UjbqwCgthD-z8_YYzVZ2XzkGacS6Qhp67zNUDJb788o/edit?usp=forms_home&ths=true"));
