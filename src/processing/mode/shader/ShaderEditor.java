@@ -137,13 +137,9 @@ public class ShaderEditor extends JavaEditor {
   }
 
   ArrayList<Pair> readShaderTemplates() {
-	  System.out.println("ENTERED readshader");
     ArrayList<Pair> templist = new ArrayList<Pair>();
-    System.out.println("readShaderTemplates path:");
     String path = mode.getFolder().getAbsolutePath() + "/templates";
-    path = path.replace("\\", "/");
-    
-    System.out.println(path);
+    path = path.replace("\\", "/"); // doing this for macOS
     
     File templatefolder = new File(path);
     for (File shaderfile : templatefolder.listFiles()) {
@@ -171,20 +167,15 @@ public class ShaderEditor extends JavaEditor {
   }
 
   protected void writeTemplateToSketch(String fileContent) throws IOException {
-	  System.out.println("ENTERED writeTemplate");
     String shdrFilename = ((ShaderSketch) getSketch()).handleNewShaderCode();
     
-    if (shdrFilename.equals("")) { // user cancelled template creation
+    if (shdrFilename.equals("")) { // if user cancelled template creation
     	return;
     }
 
     String directory = ((ShaderSketch) getSketch()).getFolder().getAbsolutePath();
-
-    System.out.println("writeTemplate path is:");
     String path = directory + "/" + shdrFilename;
-    path = path.replace("\\", "/");
-    
-    System.out.println(path);
+    path = path.replace("\\", "/"); // doing this for macOS
     
     BufferedWriter writer = new BufferedWriter(new FileWriter(path));
     writer.write(fileContent);
@@ -193,83 +184,15 @@ public class ShaderEditor extends JavaEditor {
   }
   
   protected void addTemplatesToMenu() {
-	  System.out.println("entering addtemplatetoMenu");
-	  
 	  final JMenu templates = new JMenu(Language.text("Shader Templates"));
 	  
-	  /*
-	    // Populate only when sub-menu is opened, to avoid having spurious menu
-	    // options if a library is deleted, or a missing menu option if a library is
-	    // added
-	  System.out.println("about to readshadertemplate");
-	    ArrayList<Pair> templist = readShaderTemplates();
-	    templates.addMenuListener(new MenuListener() {
-
-	      @Override
-	      public void menuSelected(MenuEvent e) {
-	        templates.removeAll();
-	        
-	        // read the template_names.txt file from shadermode location in Processing
-	        // folder
-	        // reading from disk everytime we click templates option in shader menu?
-	        // inefficient?
-	        // or load all files in constructor, then changes in files will only show when
-	        // PDE is restarted
-	        System.out.println("entering writetemplatetosketch");
-	        for (int i = 0; i < templist.size(); i++) {
-	          // System.out.println(templist.get(i));
-	          String name = templist.get(i).fst;
-	          int index = name.lastIndexOf('.');
-
-	          final JMenuItem jitem = new JMenuItem(Language.text(name.substring(0, index)));
-	          System.out.println("Adding shader template item " + name.substring(0, index));
-
-	          final int tempIndex = i;
-	          
-	          jitem.addActionListener(new ActionListener() {
-	            @Override
-	            public void actionPerformed(ActionEvent e) {
-//	              try {
-//	            	  writeTemplateToSketch(templist.get(tempIndex).snd);
-//	              } catch (IOException e1) {
-//	                // TODO Auto-generated catch block
-//	                e1.printStackTrace();
-//	              }
-	            }
-	          });
-	          
-	          templates.add(jitem);
-	        }
-	      }
-
-	      @Override
-	      public void menuDeselected(MenuEvent e) {
-	        templates.removeAll();
-	      }
-
-	      @Override
-	      public void menuCanceled(MenuEvent e) {
-	        menuDeselected(e);
-	      }
-	    });
-	    */
-	    
-	  
-    // read the template_names.txt file from shadermode location in Processing
-    // folder
-    // reading from disk everytime we click templates option in shader menu?
-    // inefficient?
-    // or load all files in constructor, then changes in files will only show when
-    // PDE is restarted
 	  ArrayList<Pair> templist = readShaderTemplates();
-    System.out.println("entering writetemplatetosketch");
     for (int i = 0; i < templist.size(); i++) {
       // System.out.println(templist.get(i));
       String name = templist.get(i).fst;
       int index = name.lastIndexOf('.');
 
       final JMenuItem jitem = new JMenuItem(Language.text(name.substring(0, index)));
-      System.out.println("Adding shader template item " + name.substring(0, index));
 
       final int tempIndex = i;
       

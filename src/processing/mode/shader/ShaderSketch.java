@@ -155,7 +155,6 @@ public class ShaderSketch extends Sketch {
 
   
   public String handleNewShaderCode() {
-	  System.out.println("ENTERED handlenewshadercode");
     // make sure the user didn't hide the sketch folder
     ensureExistence();
 
