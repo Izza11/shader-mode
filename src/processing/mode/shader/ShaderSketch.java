@@ -188,7 +188,7 @@ public class ShaderSketch extends Sketch {
   }
   
   protected boolean askUser() {
-	  if (shaderEditor == null) return false;
+	  //if (shaderEditor == null) return false;
 	  
 	    if (!Platform.isMacOS()) {
 	      String prompt = Language.interpolate("Shader files will be moved to root sketch folder. Do you want to proceed?");
