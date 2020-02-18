@@ -1,3 +1,4 @@
+// taken from https://genekogan.com/works/processing-shader-examples/
 import processing.video.*;
 
 String[] shaders = new String[] {
