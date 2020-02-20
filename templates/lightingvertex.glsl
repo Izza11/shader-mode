@@ -18,6 +18,6 @@ void main() {
   vec3 direction = normalize(lightPosition.xyz - ecPosition);    
   float intensity = max(0.0, dot(direction, ecNormal));
 
-  // Use the paramters above to compute vertColor e.g.
+  // Use the parameters above to compute vertColor e.g.
   //vertColor = vec4(intensity, intensity, intensity, 1) * color;           
 }
