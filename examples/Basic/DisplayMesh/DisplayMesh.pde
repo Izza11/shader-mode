@@ -1,3 +1,12 @@
+/* Display Mesh by Izza Tariq
+
+  Description: Uploads a 3D model contained in an .obj file (Other 3D geometry file formats are supported as well)
+  and uses surface normal values as display colors.
+
+  Note: Please note that examples are read-only, therefore if you modify an example you must save it as a new project for the changes to apply).
+    
+*/
+
 PShader simple;
 PShape s;
 void setup() {

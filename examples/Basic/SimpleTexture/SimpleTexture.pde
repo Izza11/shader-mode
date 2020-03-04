@@ -1,5 +1,13 @@
-// Texture from Jason Liebig's FLICKR collection of vintage labels and wrappers:
-// http://www.flickr.com/photos/jasonliebigstuff/3739263136/in/photostream/
+/* Simple Texture by Andres Colubri
+
+  Description: Applies a texture on a rotating 3D cylinder
+
+  Texture from Jason Liebig's FLICKR collection of vintage labels and wrappers:
+  http://www.flickr.com/photos/jasonliebigstuff/3739263136/in/photostream/
+
+  Note: Please note that examples are read-only, therefore if you modify an example you must save it as a new project for the changes to apply).
+
+*/
 
 PImage label;
 PShape can;

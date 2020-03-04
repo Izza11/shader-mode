@@ -1,4 +1,14 @@
-// taken from https://genekogan.com/works/processing-shader-examples/
+/* Texture Shaders by Gene Kogan https://genekogan.com/works/processing-shader-examples/
+
+  These are shaders which modify the pixels of a source image. In the example sketch, the source images are three image files and one movie.
+
+  Click the left and right buttons to scroll through the different shaders, and click up and down to change the source images.
+
+  Note: Please note that examples are read-only, therefore if you modify an example you must save it as a new project for the changes to apply).
+
+*/
+
+
 import processing.video.*;
 
 String[] shaders = new String[] {

@@ -1,4 +1,10 @@
-// http://glsl.heroku.com/e#4633.5
+/* Taken from http://glsl.heroku.com/e#4633.5
+
+  Description: Draws filled circles with random sizes and colors. Click and drag your mouse on the screen to generate them.
+
+  Note: Please note that examples are read-only, therefore if you modify an example you must save it as a new project for the changes to apply).
+
+*/
 
 PShader pointShader;
 

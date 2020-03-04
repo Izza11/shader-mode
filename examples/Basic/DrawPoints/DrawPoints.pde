@@ -1,3 +1,11 @@
+/* Draw Points by Andres Colubri
+
+  Description: Draws points as you move your mouse. Point sizes are random
+
+  Note: Please note that examples are read-only, therefore if you modify an example you must save it as a new project for the changes to apply).
+  
+*/
+
 PShader pointShader;
 
 void setup() {

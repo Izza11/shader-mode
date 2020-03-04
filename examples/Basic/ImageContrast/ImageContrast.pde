@@ -1,5 +1,15 @@
-// Texture from Jason Liebig's FLICKR collection of vintage labels and wrappers:
-// http://www.flickr.com/photos/jasonliebigstuff/3739263136/in/photostream/
+/* Image Contrast by Izza Tariq
+
+	Description: Changes contrast of image with respect to movement of mouse in the horizontal direction
+
+	Texture from Jason Liebig's FLICKR collection of vintage labels and wrappers:
+	http://www.flickr.com/photos/jasonliebigstuff/3739263136/in/photostream/
+
+  Note: Please note that examples are read-only, therefore if you modify an example you must save it as a new project for the changes to apply).
+  
+*/
+
+
 
 PImage label;
 PShader texShader;

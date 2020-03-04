@@ -24,7 +24,7 @@ void main() {
     vec3 satColor = mix(intensity, color, 1.);
     vec3 conColor = mix(AvgLumin, satColor, contrast);
 
-    gl_FragColor = vec4(conColor, 1);
+    gl_FragColor = vec4(conColor, 1); // assigns the final pixel color
 
     // Challenge 1:
     // Could you implement a filter that inverts the color of the image?

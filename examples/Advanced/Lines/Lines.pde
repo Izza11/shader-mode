@@ -1,3 +1,11 @@
+/* Lines by Andres Colubri
+
+  Description: Draws and rotates a wireframe 3D cube
+
+  Note: Please note that examples are read-only, therefore if you modify an example you must save it as a new project for the changes to apply).
+
+*/
+
 PShape cube;
 PShader lineShader;
 float angle;
