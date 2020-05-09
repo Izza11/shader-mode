@@ -19,4 +19,3 @@ void main(void) {
 	p.y = mod(p.y + rollAmount * sin(rollRate * time * p.x + p.x), 1.0);
   	gl_FragColor = vec4(texture2D(texture, p).rgb, 1.0);
 }
-

@@ -1,15 +1,12 @@
 /* Texture Shaders by Gene Kogan https://genekogan.com/works/processing-shader-examples/
 
-  These are shaders which modify the pixels of a source image. In the example sketch, the source images are three image files and one movie.
+  These are shaders which modify the pixels of a source image. In the example sketch, the source images are three image files.
 
   Click the left and right buttons to scroll through the different shaders, and click up and down to change the source images.
 
   Note: Please note that examples are read-only, therefore if you modify an example you must save it as a new project for the changes to apply).
 
 */
-
-
-import processing.video.*;
 
 String[] shaders = new String[] {
   "brcosa.glsl", "hue.glsl", "pixelate.glsl", "blur.glsl", 
@@ -19,7 +16,6 @@ String[] shaders = new String[] {
 
 PShader shade;
 PImage img1, img2, img3;
-Movie mov;
 
 int idxSource = 0;
 int idxShader = 0;
@@ -34,13 +30,13 @@ void setup()
   img1 = loadImage("hummingbird.jpg");
   img2 = loadImage("fruit-stand.jpg");
   img3 = loadImage("paris.jpg");
-  mov = new Movie(this, "train.mp4");
 
   setupShader();
 }
 
 void draw() 
 {
+  
   setShaderParameters();
 
   // turn on shader and display source
@@ -48,24 +44,18 @@ void draw()
   if      (idxSource == 0)  image(img1, 0, 0, width, height);
   else if (idxSource == 1)  image(img2, 0, 0, width, height);
   else if (idxSource == 2)  image(img3, 0, 0, width, height);
-  else if (idxSource == 3)  image(mov, 0, 0, width, height);
 
   // turn off shader before displaying filename
   resetShader();
   text(shaders[idxShader], 5, 20);
+  
 }
+
 
 void setupShader() 
 {
   shade = loadShader(shaders[idxShader]);
-
-  // shader 3 works better on paused movie
-  if (idxShader == 3) {
-    mov.pause();
-  } 
-  else {
-    mov.loop();
-  }
+  
 }
 
 void setShaderParameters() 
@@ -175,6 +165,7 @@ void setShaderParameters()
   }    
 }
 
+
 void keyPressed() {
   if      (keyCode==LEFT) {
     idxShader = (idxShader + shaders.length - 1) % shaders.length;
@@ -185,14 +176,9 @@ void keyPressed() {
     setupShader();
   }
   else if (keyCode==UP) {
-    idxSource = (idxSource + 3) % 4;
+    idxSource = (idxSource + 2) % 3;
   }
   else if (keyCode==DOWN) {
     idxSource = (idxSource + 1) % 4;
   }
 }
-
-void movieEvent(Movie m) {
-  m.read();
-}
-

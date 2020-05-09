@@ -24,4 +24,3 @@ void main(void) {
 	float b = texture2D(texture, pb).b;
   	gl_FragColor = vec4(r, g, b, 1.0);
 }
-
